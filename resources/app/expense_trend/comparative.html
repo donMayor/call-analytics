@@ -1,0 +1,138 @@
+<div class="container">
+
+    <div class="panel panel-default">
+        <div class="panel-heading text-center">
+            <h5 ><strong>COMPARATIVE ANALYSIS OF THE TOTAL SPEND PER TARIFF GROUP</strong></h5>
+        </div>
+    </div>
+
+    <div class="row" ng-show="show">
+        <div class="row">
+            <div class="col-lg-10">
+                <dir-pagination-controls max-size="15" direction-links="true" boundary-links="true" class="mt-20" >
+                </dir-pagination-controls>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12" style="align-content: center">
+                <div class="row "  >
+                    <div class="col-lg-3">
+                        <input type="text" class="form-control " placeholder="Search " ng-model="searchQuery">
+                    </div>
+                    <div class="col-lg-3">
+                        <select class="form-control" ng-change="sort()" ng-model="option.order_1">
+                            <option>Bill Amount</option>
+                            <option data-ng-repeat="ntw in Comparative.fields">{{ ntw }}</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-3">
+                        <select class="form-control" ng-change="order()" ng-model="option.order_2">
+                            <option>Ascending</option>
+                            <option>Descending</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <table class="table table-striped custab table-bordered mt-20">
+                    <thead>
+                    <tr>
+                        <th>
+                            TARIFF GROUP
+                        </th>
+                        <th>
+                            DESCRIPTION
+                        </th>
+                        <th>
+                            Bill Amount
+                        </th>
+                        <th data-ng-repeat="ntw in Comparative.fields">
+                            {{ ntw }}
+                        </th>
+
+                    </tr>
+                    </thead>
+                    <tr dir-paginate="data in Comparative.data |orderBy:sortKey:reverse|filter:searchQuery|itemsPerPage:20">
+                        <td>{{ data.tariff_group }}</td>
+                        <td>{{ data.code_desc }}</td>
+                        <td>&#8358 {{ numeralFormatter( data.bill).format('0,0.00')}}</td>
+                        <td data-ng-repeat="key in Comparative.fields">&#8358 {{ numeralFormatter( data[key] ).format('0,0.00')}}</td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading text-center">
+            <h5 ><strong>VARIANCE OF THE TOTAL SPEND PER TARIFF GROUP AGAINST BILL AMOUNT</strong></h5>
+        </div>
+    </div>
+
+    <div class="row" ng-show="show">
+        <div class="row">
+            <div class="col-lg-10">
+                <dir-pagination-controls max-size="15" direction-links="true" boundary-links="true" class="mt-20" >
+                </dir-pagination-controls>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12" style="align-content: center">
+                <!--<div class="row "  >-->
+                    <!--<div class="col-lg-3">-->
+                        <!--<input type="text" class="form-control " placeholder="Search" ng-model="searchQuery">-->
+                    <!--</div>-->
+                    <!--<div class="col-lg-3">-->
+                        <!--<select class="form-control" ng-change="sort()" ng-model="option.order_1">-->
+                            <!--<option>Bill Amount</option>-->
+                            <!--<option data-ng-repeat="ntw in Comparative.fields">{{ ntw }}</option>-->
+                        <!--</select>-->
+                    <!--</div>-->
+                    <!--<div class="col-lg-3">-->
+                        <!--<select class="form-control" ng-change="order()" ng-model="option.order_2">-->
+                            <!--<option>Ascending</option>-->
+                            <!--<option>Descending</option>-->
+                        <!--</select>-->
+                    <!--</div>-->
+
+                <!--</div>-->
+
+                <table class="table table-striped custab table-bordered mt-20">
+                    <thead>
+                    <tr>
+                        <th>
+                            TARIFF GROUP
+                        </th>
+                        <th>
+                            DESCRIPTION
+                        </th>
+                        <th>
+                            Bill Amount
+                        </th>
+                        <th data-ng-repeat="ntw in Comparative.fields">
+                            {{ ntw }}
+                        </th>
+
+                    </tr>
+                    </thead>
+                    <tr dir-paginate="data in Comparative.data |orderBy:sortKey:reverse|filter:searchQuery|itemsPerPage:20">
+                        <td>{{ data.tariff_group }}</td>
+                        <td>{{ data.code_desc }}</td>
+                        <td>&#8358 {{ numeralFormatter( data.bill - data.bill ).format('0,0.00') }}</td>
+                        <td data-ng-repeat="key in Comparative.fields">&#8358 {{ numeralFormatter( data[key] - data.bill ).format('0,0.00') }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" ng-hide="show">
+        <div class="col-sm-4"><progressbar class="progress-striped active"  type="success"><i><em>Loading...</em></i></progressbar></div>
+    </div>
+</div>
+

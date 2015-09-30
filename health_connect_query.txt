@@ -1,0 +1,130 @@
+2. Expense Trends 
+A. Monthly spend
+a. By lines
+SELECT l.id,l.phone_lines,count(l.phone_lines),MONTHNAME(l.date_period),sum(l.bill_amount) as total
+FROM lines_connect l
+GROUP BY l.phone_lines, MONTHNAME(l.date_period);
+
+b. By call_type
+SELECT l.id,t.code_desc,count(l.tariff_group),MONTHNAME(l.date_period),sum(l.bill_amount) as total
+FROM lines_connect l
+LEFT JOIN tariff_code t
+ON l.tariff_group=t.tariff_group
+GROUP BY t.code_desc, MONTHNAME(l.date_period);
+
+c. By calling period
+select id, date_format(date_period,'%M'),sum(bill_amount)as total, case when 
+				CAST(date_period as time) between '07:00:00.001' and '18:00:00.000' then 'Daytime' 
+			 	else 'Nighttime'
+				end  from lines_connect
+group by date_format(date_period,'%M'),case when 
+				CAST(date_period as time) between '07:00:00.001' and '18:00:00.000' then 'Daytime' 
+				else 'Nighttime'
+				end;
+
+
+B. Use the results from 2A for the comparative analysis. The call rates are in the excel sheet i gave you.
+
+3 Usage Trends
+A. Minutes of Use
+a1.Per line(Day)
+SELECT l.id,l.phone_lines,p.participant,count(l.phone_lines),DAYNAME(l.date_period),sum(l.duration) as total
+FROM lines_connect l
+LEFT JOIN participants p
+ON l.phone_lines=p.phone_lines
+GROUP BY l.phone_lines, DAYNAME(l.date_period);
+
+a2. Per line (week)
+SELECT l.id,l.phone_lines,p.participant,count(l.phone_lines),WEEK(l.date_period),sum(l.duration) as total
+FROM lines_connect l
+LEFT JOIN participants p
+ON l.phone_lines=p.phone_lines
+GROUP BY l.phone_lines, WEEK(l.date_period);
+
+a3. Per line(month)
+SELECT l.id,l.phone_lines,p.participant,count(l.phone_lines),MONTHNAME(l.date_period),sum(l.duration) as total
+FROM lines_connect l
+LEFT JOIN participants p
+ON l.phone_lines=p.phone_lines
+GROUP BY l.phone_lines, MONTHNAME(l.date_period);
+
+a4. By line (day)
+SELECT l.id,count(l.phone_lines),DAYNAME(l.date_period),sum(l.duration) as total
+FROM lines_connect l
+LEFT JOIN participants p
+ON l.phone_lines=p.phone_lines
+GROUP BY DAYNAME(l.date_period);
+
+a5. By line (week)
+SELECT l.id,count(l.phone_lines),WEEK(l.date_period),sum(l.duration) as total
+FROM lines_connect l
+LEFT JOIN participants p
+ON l.phone_lines=p.phone_lines
+GROUP BY WEEK(l.date_period);
+
+a6. By line (month)
+SELECT l.id,count(l.phone_lines),MONTHNAME(l.date_period),sum(l.duration) as total
+FROM lines_connect l
+LEFT JOIN participants p
+ON l.phone_lines=p.phone_lines
+GROUP BY MONTH(l.date_period);
+
+a7. By line (month/day)
+SELECT l.id,count(l.phone_lines),MONTHNAME(l.date_period),DAYNAME(l.date_period),sum(l.duration) as total
+FROM lines_connect l
+LEFT JOIN participants p
+ON l.phone_lines=p.phone_lines
+GROUP BY MONTH(l.date_period),DAYNAME(l.date_period);
+
+b1. By call type (day)
+SELECT l.id,t.code_desc,count(l.tariff_group),DAYNAME(l.date_period),sum(l.duration) as total
+FROM lines_connect l
+LEFT JOIN tariff_code t
+ON l.tariff_group=t.tariff_group
+GROUP BY t.code_desc, DAYNAME(l.date_period);
+
+b2. By call type (week)
+SELECT l.id,t.code_desc,count(l.tariff_group),WEEK(l.date_period),sum(l.duration) as total
+FROM lines_connect l
+LEFT JOIN tariff_code t
+ON l.tariff_group=t.tariff_group
+GROUP BY t.code_desc, WEEK(l.date_period);
+
+b3. By call type (month)
+SELECT l.id,t.code_desc,count(l.tariff_group),MONTHNAME(l.date_period),sum(l.duration) as total
+FROM lines_connect l
+LEFT JOIN tariff_code t
+ON l.tariff_group=t.tariff_group
+GROUP BY t.code_desc, MONTH(l.date_period);
+
+b4. By call type (month/day)
+SELECT l.id,t.code_desc,count(l.tariff_group),MONTHNAME(l.date_period),DAYNAME(l.date_period),sum(l.duration) as total
+FROM lines_connect l
+LEFT JOIN tariff_code t
+ON l.tariff_group=t.tariff_group
+GROUP BY t.code_desc, MONTH(l.date_period),DAYNAME(l.date_period);
+
+c1. By calling period (month)
+select id, MONTHNAME(date_period),sum(duration)as total, case when 
+				CAST(date_period as time) between '07:00:00.001' and '18:00:00.000' then 'Daytime' 
+			 	else 'Nighttime'
+				end  from lines_connect
+group by MONTH(date_period),case when 
+				CAST(date_period as time) between '07:00:00.001' and '18:00:00.000' then 'Daytime' 
+				else 'Nighttime'
+				end;
+
+c2. By calling period (month/day)
+select id, MONTHNAME(date_period),DAYNAME(date_period),sum(duration)as total, case when 
+				CAST(date_period as time) between '07:00:00.001' and '18:00:00.000' then 'Daytime' 
+			 	else 'Nighttime'
+				end  from lines_connect
+group by MONTH(date_period),DAYNAME(date_period),case when 
+				CAST(date_period as time) between '07:00:00.001' and '18:00:00.000' then 'Daytime' 
+				else 'Nighttime'
+				end;
+
+d. Use the minutes of use by call type for this comparative analysis.
+
+4. Calling Patterns.
+The query for the calling patterns are not ready yet. When they are I will send it to you probably tommorrow evening or saturday morning.

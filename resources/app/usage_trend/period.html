@@ -1,0 +1,95 @@
+
+<div class="container">
+
+    <div class="panel panel-default">
+        <div class="panel-heading text-center">
+            <h5 ><strong>MONTHLY DURATION BY PERIOD</strong></h5>
+        </div>
+    </div>
+
+    <div class="row" ng-show="show">
+        <div class="row">
+            <div class="col-lg-6">
+                <dir-pagination-controls max-size="9" direction-links="true" boundary-links="true" class="mt-20" >
+                </dir-pagination-controls>
+            </div>
+            <div class="col-lg-6 mt-20 form-group row">
+                <div class="col-lg-5"><label>Period result for:</label></div>
+                <div class="col-lg-5">
+                    <select class="form-control" ng-change="runLinesQuery( option.query_type )"  ng-model="option.query_type">
+                        <option>Voice and SMS only</option>
+                        <option>GPRS Only</option>
+                    </select>
+                </div>
+                <!--<div class="col-lg-2">-->
+                    <!--<a class="btn btn-success" ng-click="runLinesQuery( option.query_type )" > RUN </a>-->
+                <!--</div>-->
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-lg-12" style="align-content: center">
+                <div class="row "  >
+                    <div class="col-lg-3">
+                        <input type="text" class="form-control " placeholder="Search by call type or amount" ng-model="searchQuery">
+                    </div>
+                    <div class="col-lg-3">
+                        <select class="form-control" ng-change="sort()" ng-model="option.order_1">
+                            <option>Month</option>
+                            <option data-ng-repeat="t_period in byPeriod.fields">{{ t_period }}</option>
+                            <option>Total</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-3">
+                        <select class="form-control" ng-change="order()" ng-model="option.order_2">
+                            <option>Ascending</option>
+                            <option>Descending</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-3 mt-20">
+                        <a class="btn btn-success" ng-click="gotoAnchor()" >GO TO GRAPH</a>
+                    </div>
+                </div>
+
+                <table class="table table-striped custab table-bordered mt-20">
+                    <thead>
+                    <tr>
+                        <th>
+                            MONTH
+                        </th>
+                        <th data-ng-repeat="tPeriod in byPeriod.fields">
+                            {{ tPeriod }}
+                        </th>
+                        <th>
+                            TOTAL
+                        </th>
+                    </tr>
+                    </thead>
+                    <tr dir-paginate="ePeriod in byPeriod.data |orderBy:sortKey:reverse|filter:searchQuery|itemsPerPage:20">
+                        <td>{{ ePeriod.period }}</td>
+                        <td data-ng-repeat="prd in byPeriod.fields">{{ (option.query_type == 'Voice and SMS only')? numeralFormatter(  ePeriod[prd]).format('00:00:00'):numeralFormatter(  ePeriod[prd]/8 ).format('0.0b') }}</td>
+                        <td> {{ (option.query_type == 'Voice and SMS only')? numeralFormatter( ePeriod.total ).format('00:00:00'):numeralFormatter(  ePeriod.total/8 ).format('0.0b')}}</td>
+                    </tr>
+                    <tr>
+                        <td>TOTAL</td>
+                        <td style="background-color: #0b7c43; color: #fff; font-weight: bold" data-ng-repeat="tPeriod in byPeriod.fields">  {{ (option.query_type == 'Voice and SMS only')? numeralFormatter( byPeriod.sums[tPeriod] ).format('00:00:00'):numeralFormatter(  byPeriod.sums[tPeriod]/8 ).format('0.0b')}}</td>
+                        <td  style="background-color: #e8292f; color: #fff; font-weight: bold"> {{ (option.query_type == 'Voice and SMS only')? numeralFormatter(byPeriod.sums.sum_total  ).format('00:00:00'):numeralFormatter(  byPeriod.sums.sum_total/8 ).format('0.0b')}} </td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+        <div class="row anchor" id="graph">
+            <div class="col-lg-12">
+                <canvas id="myChart" width="500" height="400"></canvas>
+                <canvas id="myChart2" width="500" height="400"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" ng-hide="show">
+        <div class="col-sm-4"><progressbar class="progress-striped active"  type="success"><i><em>Loading...</em></i></progressbar></div>
+    </div>
+</div>
+
